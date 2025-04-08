@@ -1,0 +1,55 @@
+name: Azure Login using Github action
+
+on:
+  workflow_dispatch:
+    inputs:
+      ENVIRONMENT:
+        description: 'Environment'
+        required: true
+        type: choice
+        options: 
+          - dev
+          - qa
+          - prod		  
+      REGION:
+        description: 'Region'
+        required: true
+        type: choice
+        options:
+          - eastus2
+          - centralus		  
+run-name: ${{ inputs.ENVIRONMENT }} ${{ inputs.REGION }} deployment
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+env:
+  AZURE_CLIENT_ID: ${{secrets.AZURE_CLIENT_ID}}
+  AZURE_TENANT_ID: ${{vars.AZURE_TENANT_ID}}
+  AZURE_SUBSCRIPTION_ID: ${{vars.AZURE_SUBSCRIPTION_ID}}
+
+jobs:
+  login:
+    runs-on: [Windows]
+    environment: ${{inputs.ENVIRONMENT}}
+    permissions:
+      id-token: write #This is required for requesting the JWT
+      contents: read #This is required for actions/checkout
+    steps:
+       - name: Login to Azure
+         uses: azure/login@v2
+         with:
+            client-id: ${{ secrets.AZURE_CLIENT_ID }}
+            tenant-id: ${{ vars.AZURE_TENANT_ID }}
+            subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+       - name: Azure CLI script
+         uses: azure/cli@v2
+         with:
+          azcliversion: latest
+          inlineScript: |
+            az account show
+    
+ 
+  

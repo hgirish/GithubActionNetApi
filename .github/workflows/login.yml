@@ -32,7 +32,7 @@ env:
 
 jobs:
   login:
-    runs-on: [Windows]
+    runs-on: [ubuntu-latest]
     environment: ${{inputs.ENVIRONMENT}}
     permissions:
       id-token: write #This is required for requesting the JWT

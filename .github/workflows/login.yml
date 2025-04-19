@@ -50,6 +50,15 @@ jobs:
           azcliversion: latest
           inlineScript: |
             az account show
+
+       - name: create a file on vm
+         run: |
+          az vm run-command invoke  --command-id RunPowerShellScript --name freevm -g free-vm --scripts "echo 'Hello World!' > test.txt"
+           az vm run-command invoke  --command-id RunPowerShellScript --name freevm -g free-vm --scripts "ls -l"
+           az vm run-command invoke  --command-id RunPowerShellScript --name freevm -g free-vm --scripts "cat test.txt"
+           
+          
+        
     
  
   
